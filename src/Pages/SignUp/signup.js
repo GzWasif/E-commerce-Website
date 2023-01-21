@@ -1,46 +1,63 @@
-import { FormGroup, form, Input, Label, Button } from "reactstrap";
-import { useForm, Controller } from "react-hook-form";
+// import { FormGroup, form, Input, Label, Button } from "reactstrap";
+import { useForm } from "react-hook-form";
 // import user from "../../Data/data";
 import { Link, useNavigate } from "react-router-dom";
-import useFetch from "../../Custom Hooks/useFetch";
+// import useFetch from "../../Custom Hooks/useFetch";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { registerWithEmailAndPassword, auth } from "../../firebase";
+import { useEffect } from "react";
 
 const SignUp = () => {
+  const [user, loading] = useAuthState(auth);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
-  const { data: users, error: bhul } = useFetch("http://localhost:8000/users");
-
-  let flag = 0;
-
-  const onBlur = (e) => {
-    flag = users.findIndex((user) => user.email === e.target.value);
-    console.log(-1);
-  };
-
-  const onSubmit = (data) => {
-    // console.log(data);
-    if (flag === -1) {
-      const id = users.length + 1;
-      const user = { id: id, ...data };
-      fetch("http://localhost:8000/users", {
-        method: "POST",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify(user),
-      }).then(() => {
-        navigate("/");
-      });
-    } else {
-      alert("Email already exists");
+  // const { data: users } = useFetch("http://localhost:8000/users");
+  useEffect(() => {
+    if (loading) return;
+    if (user) {
+      navigate("/products", { replace: true });
     }
-    // const id = users.length;
-    // const demoUser = user;
-    // demoUser.push({ id: id, ...data });
-    // setUsers(demoUser);
-    // console.log(users);
-    // navigate("/");
+  }, [user, loading, navigate]);
+
+  // let flag = 0;
+
+  // const onBlur = (e) => {
+  //   flag = users.findIndex((user) => user.email === e.target.value);
+  //   console.log(-1);
+  // };
+
+  // const onSubmit = (data) => {
+  //   // console.log(data);
+  //   if (flag === -1) {
+  //     const id = users.length + 1;
+  //     const user = { id: id, ...data };
+  //     fetch("http://localhost:8000/users", {
+  //       method: "POST",
+  //       headers: { "Content-type": "application/json" },
+  //       body: JSON.stringify(user),
+  //     }).then(() => {
+  //       navigate("/");
+  //     });
+  //   } else {
+  //     alert("Email already exists");
+  //   }
+  //   // const id = users.length;
+  //   // const demoUser = user;
+  //   // demoUser.push({ id: id, ...data });
+  //   // setUsers(demoUser);
+  //   // console.log(users);
+  //   // navigate("/");
+  // };
+  const onSubmit = (data) => {
+    registerWithEmailAndPassword(
+      data.firstName + data.lastName,
+      data.email,
+      data.password
+    );
   };
 
   return (
@@ -198,7 +215,7 @@ const SignUp = () => {
           type="email"
           placeholder="Email"
           className="form-control rounded-pill mb-2"
-          onBlur={onBlur}
+          onBlur={() => {}}
         />
         {errors.email?.type === "required" && (
           <p role="alert">{errors.email?.message}</p>

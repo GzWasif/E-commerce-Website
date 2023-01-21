@@ -1,14 +1,14 @@
 import { Form, FormGroup, Input, Button, Container, Label } from "reactstrap";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { Alert } from "reactstrap";
-import { useLogInContext } from "../../context/login";
+// import { Alert } from "reactstrap";
+// import { useLogInContext } from "../../context/login";
 // import user from "../../Data/data";
-const axios = require("axios");
+// const axios = require("axios");
 const Profile = ({ user }) => {
-  const { setIsLoggedIn } = useLogInContext();
+  // const { setIsLoggedIn } = useLogInContext();
   // console.log(user);
-  const { register, handleSubmit, control } = useForm({
+  const { handleSubmit, control } = useForm({
     defaultValues: {
       firstName: user.firstName,
       lastName: user.lastName,
@@ -17,22 +17,23 @@ const Profile = ({ user }) => {
     },
   });
 
-  const onSubmit = (data) => {
-    fetch(`http://localhost:8000/users/${user.id}`, {
-      method: "PUT",
-      headers: { "Content-type": "application/json" },
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json)
-      .then((data) => console.log(data));
+  // const onSubmit = (data) => {
+  //   fetch(`http://localhost:8000/users/${user.id}`, {
+  //     method: "PUT",
+  //     headers: { "Content-type": "application/json" },
+  //     body: JSON.stringify(data),
+  //   })
+  //     .then((res) => res.json)
+  //     .then((data) => console.log(data));
 
-    alert("Changes Saved. You need to login again.");
+  //   alert("Changes Saved. You need to login again.");
 
-    setTimeout(() => {
-      setIsLoggedIn(false);
-      navigate("/");
-    }, 1000);
-  };
+  //   setTimeout(() => {
+  //     setIsLoggedIn(false);
+  //     navigate("/");
+  //   }, 1000);
+  // };
+  const onSubmit = () => {};
 
   const navigate = useNavigate();
 

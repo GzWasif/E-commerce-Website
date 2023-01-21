@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { FormGroup, Label, Input, Form, Button } from "reactstrap";
+import { FormGroup, Input, Form, Button } from "reactstrap";
 import { useNavigate } from "react-router-dom";
-import { useLogInContext } from "../../context/login";
-import useFetch from "../../Custom Hooks/useFetch";
+// import { useLogInContext } from "../../context/login";
+// import useFetch from "../../Custom Hooks/useFetch";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, logInWithEmailAndPassword } from "../../firebase";
 
 // const UserContext = createContext({});
 
@@ -12,12 +14,13 @@ const LogIn = ({ setUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
-  const { setIsLoggedIn } = useLogInContext();
+  // const { setIsLoggedIn } = useLogInContext();
+  const [user, loading] = useAuthState(auth);
   const inputRef = useRef(null);
 
   const navigate = useNavigate();
 
-  const { data: users, error: bhul } = useFetch("http://localhost:8000/users");
+  // const { data: users } = useFetch("http://localhost:8000/users");
 
   // console.log(users);
   // if (bhul) {
@@ -26,21 +29,37 @@ const LogIn = ({ setUser }) => {
 
   useEffect(() => {
     inputRef.current.focus();
-  }, []);
+    if (loading) {
+      console.log("Ami loading");
+      return;
+    }
+    if (user) {
+      console.log(user);
+      navigate("/products");
+    }
+  }, [user, loading, navigate]);
 
   const handleLogIn = (e) => {
     e.preventDefault();
-    const demoUser = users.find((item) => item.email === email);
-    if (demoUser && demoUser.password === password) {
-      setUser(demoUser);
-      setError(false);
-      setIsLoggedIn(true);
-      navigate("/products");
-    } else {
-      setError(true);
-      setEmail("");
-      setPassword("");
-    }
+    // const demoUser = users.find((item) => item.email === email);
+    // if (demoUser && demoUser.password === password) {
+    //   setUser(demoUser);
+    //   setError(false);
+    //   setIsLoggedIn(true);
+    //   navigate("/products");
+    // } else {
+    //   setError(true);
+    //   setEmail("");
+    //   setPassword("");
+    // }
+    logInWithEmailAndPassword(email, password)
+      .then(() => {
+        setError(false);
+      })
+      .catch((err) => {
+        alert(err.message);
+        setError(true);
+      });
   };
 
   const handleSignUp = () => {

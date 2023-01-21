@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Collapse,
   Navbar,
@@ -9,16 +9,17 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useLogInContext } from "../../context/login";
+// import { useLogInContext } from "../../context/login";
 import { Input, InputGroup, Button } from "reactstrap";
 import { Categorydropdown } from "../dropdown/dropdown";
+import { logout } from "../../firebase";
 
 const ModifiedNavbar = ({ onSearch, cartItemCount }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  const { setIsLoggedIn } = useLogInContext();
+  // const { setIsLoggedIn } = useLogInContext();
 
   //   useEffect(() => {
   //     const navbar = document.getElementsByClassName(".navbar");
@@ -37,9 +38,15 @@ const ModifiedNavbar = ({ onSearch, cartItemCount }) => {
     }
   };
 
-  const handleLogOut = () => {
-    setIsLoggedIn(false);
-    navigate("/", { replace: true });
+  // const handleLogOut = () => {
+  //   setIsLoggedIn(false);
+  //   navigate("/", { replace: true });
+  // };
+
+  const handleLogOut = async () => {
+    const b = await logout();
+    console.log(b);
+    navigate("/");
   };
 
   const handleSubmit = () => {

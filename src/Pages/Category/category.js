@@ -20,7 +20,7 @@ const Category = () => {
       setLoading(false);
     };
     fetchProduct().catch(console.error);
-  }, [category]);
+  }, [category, products]);
   return (
     <>
       <div className="container">

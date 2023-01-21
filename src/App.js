@@ -11,36 +11,39 @@ import { Product } from "./Pages/Product/Product";
 import { Cart } from "./Pages/Cart/Cart";
 import { NotFound } from "./Pages/Error/Not-Found";
 import { Category } from "./Pages/Category/category";
-import { Navbar } from "./components/navbar/navbar";
+// import { Navbar } from "./components/navbar/navbar";
 import { useState } from "react";
 import SignUp from "./Pages/SignUp/signup";
 import LogIn from "./Pages/LogIn/LogIn";
 
 import { useCart } from "./context/cart";
-import { useLogInContext } from "./context/login";
+// import { useLogInContext } from "./context/login";
 import Protected from "./components/protected/protected";
 // import user from "./Data/data";
 import Profile from "./Pages/Profile/profile";
 import { ModifiedNavbar } from "./components/modifiednavbar/ModifiedNavbar";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "./firebase";
 
 function App() {
   // localStorage.setItem("isLoggedIn", true);
   // localStorage.getItem("lastname");
 
+  const [tuser] = useAuthState(auth);
   const [user, setUser] = useState({});
 
   const navigate = useNavigate();
 
   const { cartItemCount } = useCart();
 
-  const { isLoggedIn, setIsLoggedIn } = useLogInContext();
+  // const { isLoggedIn, setIsLoggedIn } = useLogInContext();
 
   const onSearch = (searchQuery) => {
     navigate(`/products/?${createSearchParams({ q: searchQuery })}`);
   };
   return (
     <>
-      {isLoggedIn && (
+      {tuser && (
         <ModifiedNavbar onSearch={onSearch} cartItemCount={cartItemCount()} />
       )}
 
